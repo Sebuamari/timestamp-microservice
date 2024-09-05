@@ -26,15 +26,24 @@ const isValidDate = (str) => {
 // your first API endpoint... 
 app.get("/api/:date?", function (req, res) {
   const { date } = req.params;
-  let dateUTC, timestamp;
+  let dateUTC = new Date();
+  let timestamp = dateUTC.getTime();
 
-  if (isValidDate(date)) {
-    const [ year, month, day ] = date.split("-");
-    dateUTC = new Date(`${year}-${month}-${day}`);
-    timestamp = dateUTC.getTime();
-  } else {
-    timestamp = parseInt(date);
-    dateUTC = new Date(parseInt(date));
+  if(date) {
+    if (date.includes("-")) {
+      if(isValidDate(date)) {
+        const [ year, month, day ] = date.split("-");
+        dateUTC = new Date(`${year}-${month}-${day}`);
+        timestamp = dateUTC.getTime();
+      } else {
+        res.json({
+          error : "Invalid Date"
+        });
+      }
+    } else {
+      timestamp = parseInt(date);
+      dateUTC = new Date(parseInt(date));
+    }
   }
 
   res.json({
