@@ -18,10 +18,29 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+const isValidDate = (str) => {
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+  return regex.test(str);
+};
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/api/:date?", function (req, res) {
+  const { date } = req.params;
+  let dateUTC, timestamp;
+
+  if (isValidDate(date)) {
+    const [ year, month, day ] = date.split("-");
+    dateUTC = new Date(`${year}-${month}-${day}`);
+    timestamp = dateUTC.getTime();
+  } else {
+    timestamp = parseInt(date);
+    dateUTC = new Date(parseInt(date));
+  }
+
+  res.json({
+    unix: timestamp,
+    utc: dateUTC.toUTCString()
+  });
 });
 
 
