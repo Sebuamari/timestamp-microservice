@@ -27,10 +27,10 @@ const isValidDate = (date) => {
 // your first API endpoint... 
 app.get("/api/:date", function (req, res) {
   const { date } = req.params;
-  let dateUTC = new Date(date), timestamp;
+  let dateUTC = new Date(date).toUTCString(), timestamp;
 
   if(!isValidDate(new Date(date))) {
-    dateUTC = new Date(+date);
+    dateUTC = new Date(+date).toUTCString();
   }
 
   if(isValidDate(dateUTC)) {
