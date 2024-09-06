@@ -26,16 +26,13 @@ const isValidDate = (date) => {
 
 // your first API endpoint... 
 app.get("/api/:date", function (req, res) {
-  const { date } = req.params;
-  let dateUTC = new Date(date).toUTCString(), timestamp;
+  let date = new Date(req.params.date);
 
-  if(!isValidDate(new Date(date))) {
-    dateUTC = new Date(+date).toUTCString();
+  if(!isValidDate(date)) {
+    date = new Date(+req.params.date);
   }
 
-  if(isValidDate(dateUTC)) {
-    timestamp = new Date(date).getTime();
-  } else {
+  if(!isValidDate(date)) {
     res.json({
       error : "Invalid Date"
     });
@@ -43,8 +40,8 @@ app.get("/api/:date", function (req, res) {
   }
 
   res.json({
-    unix: timestamp,
-    utc: dateUTC
+    unix: date.getTime(),
+    utc: date.toUTCString()
   });
 });
 
