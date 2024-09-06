@@ -19,7 +19,7 @@ app.get("/", function (req, res) {
 });
 
 const isValidDate = (str) => {
-  const regex = /^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])$/;
+  const regex = /^\d{4}-\d{1,2}-\d{1,2}(T\d{1,2}:\d{1,2}:\d{1,2}(?:\.\d{1,3})?(?:Z|([+-]\d{1,2}:\d{2}))?)?$/;
   return regex.test(str);
 };
 
