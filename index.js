@@ -34,7 +34,7 @@ app.get("/api/:date", function (req, res) {
   }
 
   if(isValidDate(dateUTC)) {
-    timestamp = dateUTC.getTime();
+    timestamp = new Date(date).getTime();
   } else {
     res.json({
       error : "Invalid Date"
