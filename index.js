@@ -20,41 +20,40 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-const isValidDate = (str) => {
-  const regex = /^\d{4}-\d{1,2}-\d{1,2}(T\d{1,2}:\d{1,2}:\d{1,2}(?:\.\d{1,3})?(?:Z|([+-]\d{1,2}:\d{2}))?)?$/;
-  return regex.test(str);
+const isValidDate = (date) => {
+  return date.toUTCString() !== "Invalid Date";
 };
 
 // your first API endpoint... 
-app.get("/api/:date?", function (req, res) {
+app.get("/api/:date", function (req, res) {
   const { date } = req.params;
-  let dateUTC = new Date();
-  let timestamp = dateUTC.getTime();
+  let dateUTC = new Date(date), timestamp;
 
-  if(date) {
-    if (date.includes("-")) {
-      if(isValidDate(date)) {
-        const [ year, month, day ] = date.split("-");
-        dateUTC = new Date(`${year}-${month}-${day}`);
-        timestamp = dateUTC.getTime();
-      } else {
-        res.json({
-          error : "Invalid Date"
-        });
-      }
-    } else {
-      timestamp = parseInt(date);
-      dateUTC = new Date(parseInt(date));
-    }
+  if(!isValidDate(new Date(date))) {
+    dateUTC = new Date(+date);
+  }
+
+  if(isValidDate(dateUTC)) {
+    timestamp = dateUTC.getTime();
+  } else {
+    res.json({
+      error : "Invalid Date"
+    });
+    return;
   }
 
   res.json({
     unix: timestamp,
-    utc: dateUTC.toUTCString()
+    utc: dateUTC
   });
 });
 
-
+app.get("/api", function (req, res) {
+  res.json({
+    unix: new Date().getTime(),
+    utc: new Date().toUTCString()
+  });
+});
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
